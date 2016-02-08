@@ -13,8 +13,6 @@
                         break;  
                 case "--file":
 			$filename = $command[2];
-			initDB();
-			initTable();
                         insertFile($filename);
                         break;
                 case "--create_table":
@@ -41,9 +39,6 @@
 
 	}
 
-	function createTable(){
-		echo "From create table function\n";
-	}
 
 	function dryRun(){
 		echo "From dry run function\n";
@@ -124,7 +119,7 @@
 	}
 
 
-	function initTable(){
+	function createTable(){
 
 		global $servername, $username, $password, $dbname;
 		
@@ -158,6 +153,6 @@
 
 	}
 
-		
+	initDB();
 	commandCheck($argv);
 ?>

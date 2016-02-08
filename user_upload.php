@@ -54,7 +54,19 @@
 		while(! feof($file))
         	{
         		$line = (fgetcsv($file));
-			echo "First name:  $line[0], Last name: $line[1], Email: $line[2]\n";
+			$firstName = ucwords(strtolower($line[0]));
+			$lastName = ucwords(strtolower($line[1]));
+			$emailAddress = $line[2];
+
+			if (filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
+    				echo "This ($emailAddress) email address is considered valid.\n";
+			}			
+			else
+			{
+				echo "($emailAddress) is not valid\n";
+			}
+			
+			//echo "First name:  $firstName, Last name: $lastName, Email: $line[2]\n";
         	}
 
         	fclose($file);
@@ -123,6 +135,6 @@
 	}
 		
 	commandCheck($argv);
-	initDB();
-	initTable();
+	//initDB();
+	//initTable();
 ?>

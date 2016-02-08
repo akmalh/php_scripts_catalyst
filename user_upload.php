@@ -48,9 +48,21 @@
 	}
 
 	function insertFile($filename){
-		echo "From insert $filename function\n";
+
+		global $servername, $username, $password, $dbname;
+
+                // Create connection
+                $conn = new mysqli($servername, $username, $password, $dbname);
+
+                // Check connection
+                if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error."\n\n");
+                }
+                echo "Connected successfully\n";
+
+		echo "Inserting data from $filename to DB\n";
+
 		$file = fopen($filename,"r");
-		
 		while(! feof($file))
         	{
         		$line = (fgetcsv($file));
@@ -60,6 +72,15 @@
 
 			if (filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
     				echo "This ($emailAddress) email address is considered valid.\n";
+				$sql = "INSERT INTO users (name, surname, email) VALUES ($firstName, $lastName, $emailAddress)";
+
+				if ($conn->query($sql) === TRUE) {
+    					echo "New record created successfully\n";
+				} 
+				else {
+    					echo "Error: " . $sql . "<br>" . $conn->error . "\n\n";
+				}
+
 			}			
 			else
 			{
@@ -70,6 +91,7 @@
         	}
 
         	fclose($file);
+		$conn->close();
 	}
 
 
@@ -118,8 +140,7 @@
                         id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                         name VARCHAR(30) NOT NULL,
                         surname VARCHAR(30) NOT NULL,
-                        email VARCHAR(50),
-                        insert_date TIMESTAMP,
+                        email VARCHAR(50) NOT NULL,
                         UNIQUE (email)
                         )";
 

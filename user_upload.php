@@ -13,6 +13,8 @@
                         break;  
                 case "--file":
 			$filename = $command[2];
+			initDB();
+			initTable();
                         insertFile($filename);
                         break;
                 case "--create_table":
@@ -66,28 +68,28 @@
 		while(! feof($file))
         	{
         		$line = (fgetcsv($file));
-			$firstName = ucwords(strtolower($line[0]));
-			$lastName = ucwords(strtolower($line[1]));
-			$emailAddress = $line[2];
+			$firstName = str_replace('\'', '\'\'', (preg_replace('/\s+/', '', (ucwords(strtolower($line[0]))))));
+			$lastName = str_replace('\'', '\'\'', (preg_replace('/\s+/', '', (ucwords(strtolower($line[1]))))));
+			$emailAddress = str_replace('\'', '\'\'', (preg_replace('/\s+/', '', ($line[2]))));
 
 			if (filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
     				echo "This ($emailAddress) email address is considered valid.\n";
-				$sql = "INSERT INTO users (name, surname, email) VALUES ($firstName, $lastName, $emailAddress)";
-
+				$sql = "INSERT INTO users (name, surname, email) 
+					VALUES ('$firstName', '$lastName', '$emailAddress')";
+				
 				if ($conn->query($sql) === TRUE) {
     					echo "New record created successfully\n";
 				} 
 				else {
     					echo "Error: " . $sql . "<br>" . $conn->error . "\n\n";
 				}
-
+				
 			}			
 			else
 			{
 				echo "($emailAddress) is not valid\n";
 			}
 			
-			//echo "First name:  $firstName, Last name: $lastName, Email: $line[2]\n";
         	}
 
         	fclose($file);
@@ -141,6 +143,7 @@
                         name VARCHAR(30) NOT NULL,
                         surname VARCHAR(30) NOT NULL,
                         email VARCHAR(50) NOT NULL,
+			insert_date TIMESTAMP,
                         UNIQUE (email)
                         )";
 
@@ -154,8 +157,7 @@
                 $conn->close();
 
 	}
+
 		
 	commandCheck($argv);
-	//initDB();
-	//initTable();
 ?>

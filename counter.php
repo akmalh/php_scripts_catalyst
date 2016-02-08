@@ -35,6 +35,6 @@
                 }
 
 		$counter += 1;
-		print "\n";
+		echo "\n";
 	}
 ?>

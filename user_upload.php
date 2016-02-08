@@ -1,5 +1,9 @@
 <?php
-
+	$servername = "localhost";
+        $username = "root";
+        $password = "password";
+	$dbname = "myDB";
+	
 	function commandCheck ($command){
 		
 		switch ($command[1]){
@@ -56,51 +60,69 @@
         	fclose($file);
 	}
 
-	function connectDB(){
-	
-		$servername = "localhost";
-		$username = "root";
-		$password = "password";
+
+	function initDB(){
+
+		global $servername, $username, $password;		
 
 		// Create connection
-		$conn = new mysqli($servername, $username, $password);
+                $conn = new mysqli($servername, $username, $password);
 
-		// Check connection
-		if ($conn->connect_error) {
-    		die("Connection failed: " . $conn->connect_error."\n\n");
-		}
-		echo "Connected successfully\n";
+                // Check connection
+                if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error."\n\n");
+                }
+                echo "Connected successfully\n";
 
-		// Create database
-		$sql = "CREATE DATABASE IF NOT EXISTS myDB";
-		if ($conn->query($sql) === TRUE) {
-    			echo "Database created successfully\n\n";
-		} 
-		else {
-    			echo "Error creating database: " . $conn->error. "\n\n";
-		}
-
-		// sql to create table
-		$sql = "CREATE TABLE IF NOT EXISTS users (
-			id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-			name VARCHAR(30) NOT NULL,
-			surname VARCHAR(30) NOT NULL,
-			email VARCHAR(50),
-			insert_date TIMESTAMP,
-			UNIQUE (email)
-			)";
-
-		if ($conn->query($sql) === TRUE) {
-    			echo "Table users created successfully";
-		} 
-		else {
-    			echo "Error creating table: " . $conn->error;
-		}
+                // Create database
+                $sql = "CREATE DATABASE IF NOT EXISTS myDB";
+                if ($conn->query($sql) === TRUE) {
+                        echo "Database created successfully\n\n";
+                }
+                else {
+                        echo "Error creating database: " . $conn->error. "\n\n";
+                }
 
 		$conn->close();
+
 	}
 
+
+	function initTable(){
+
+		global $servername, $username, $password, $dbname;
+		
+		// Create connection
+                $conn = new mysqli($servername, $username, $password, $dbname);
+
+                // Check connection
+                if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error."\n\n");
+                }
+                echo "Connected successfully\n";
+		
+		// sql to create table
+                $sql = "CREATE TABLE IF NOT EXISTS users (
+                        id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                        name VARCHAR(30) NOT NULL,
+                        surname VARCHAR(30) NOT NULL,
+                        email VARCHAR(50),
+                        insert_date TIMESTAMP,
+                        UNIQUE (email)
+                        )";
+
+                if ($conn->query($sql) === TRUE) {
+                        echo "Table users created successfully\n\n";
+                }
+                else {
+                        echo "Error creating table: " . $conn->error . "\n\n";
+                }
+
+                $conn->close();
+
+	}
 		
 	commandCheck($argv);
-	connectDB();
+	initDB();
+	initTable();
 ?>

@@ -17,21 +17,21 @@
 
 	while ($counter <= 100)	// Counting 1 to 100
 	{
-		print $counter;
+		echo $counter;
 
 		if (($counter%3) == 0 && ($counter%5) != 0)	// Condition to check divisble only by 3
 		{
-			print " $tripleMsg";
+			echo " $tripleMsg";
 		}
 
 		if (($counter%3) != 0 && ($counter%5) == 0)	// Condition to check divisble only by 5
                 {
-                        print " $fiverMsg";
+                        echo " $fiverMsg";
                 }
 
 		if (($counter%3) == 0 && ($counter%5) == 0)	// Condition to check divisble by both 3 and 5
                 {
-                        print " $tripleFiverMsg";
+                        echo " $tripleFiverMsg";
                 }
 
 		$counter += 1;

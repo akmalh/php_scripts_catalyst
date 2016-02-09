@@ -40,9 +40,9 @@
                         $username = $command[5];
                         $password = $command[7];
 			$servername = $command[9];
-
+			
 			initDB();
-                        dryRun();
+                        dryRun($filename);
                         break;
 
                 default:
@@ -64,8 +64,57 @@
 	}
 
 
-	function dryRun(){
-		echo "From dry run function\n";
+	function dryRun($filename){
+		
+		global $servername, $username, $password, $dbname;
+
+                // Create connection
+                $conn = new mysqli($servername, $username, $password, $dbname);
+
+                // Check connection
+                if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error."\n\n");
+                }
+                echo "Connected successfully\n";
+
+                echo "Turning Auto Commit off for Dry Run\n";
+
+		$conn->autocommit(FALSE);
+
+                $file = fopen($filename,"r");
+                while(! feof($file))
+                {
+                        $line = (fgetcsv($file));
+                        $firstName = str_replace('\'', '\'\'', (preg_replace('/\s+/', '', (ucwords(strtolower($line[0]))))));
+                        $lastName = str_replace('\'', '\'\'', (preg_replace('/\s+/', '', (ucwords(strtolower($line[1]))))));
+                        $emailAddress = str_replace('\'', '\'\'', (preg_replace('/\s+/', '', ($line[2]))));
+
+                        if (filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
+                                echo "This ($emailAddress) email address is considered valid.\n";
+                                $sql = "INSERT INTO users (name, surname, email) 
+                                        VALUES ('$firstName', '$lastName', '$emailAddress')";
+				
+                                if ($conn->query($sql) === TRUE) {
+                                        echo "New record created successfully\n";
+                                }
+                                else {
+                                        echo "Error: " . $sql . "<br>" . $conn->error . "\n\n";
+                                }
+			
+				$conn->rollback();
+				echo "New record insertion rolled back\n";
+
+                        }
+                        else
+                        {
+                                echo "($emailAddress) is not valid\n";
+                        }
+
+                }
+
+                fclose($file);
+		$conn->autocommit(TRUE); 
+                $conn->close();
 	}
 
 	function insertFile($filename){

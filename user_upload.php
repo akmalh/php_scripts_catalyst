@@ -1,12 +1,36 @@
 <?php
-	$servername = "";
-        $username = "";
-        $password = "";
-	$dbname = "myDB";
+/*
+###########################################################
+# Author: Akmal Hossain
+#
+# Description:  The PHP script inserts data from csv file
+#               to SQL database. The script takes command
+#               line arguments as directives. Each directive
+#               need to be followed by database username,
+#               password and host name which has the database.
+#               The script avoids insertion of  duplication
+#		data and invalid email addresses.
+###########################################################
+*/
+
+
+	$servername = "";	// Global variaable for host name
+        $username = "";		// Global variable for SQL username
+        $password = "";		// Global variable for SQL password
+	$dbname = "myDB";	// Global variable to hold the database name
 	
+
+	/*
+	 commandCheck() function takes the user argument 
+	 and checks which directive has been entered by user
+	*/
+
 	function commandCheck ($command){
 		
 		global $servername, $username, $password;
+
+		// Swicth case checking input argument
+
 		switch ($command[1]){
 
                 case "--help":
@@ -49,6 +73,12 @@
                         echo "Invalid command entered\n";
 		}
 	}
+	
+
+	/*
+         helpDirectives() function is invoked when user enters --help. 
+         It prints out definition of each command line argument option.
+        */
 
 	function helpDirectives(){
 
@@ -63,6 +93,12 @@
 
 	}
 
+
+	/*
+         dryRun() function is invoked when user enters --dry_run.
+         It checks data insertion to the database without commiting 
+	 the changes (Rollback).
+        */
 
 	function dryRun($filename){
 		
@@ -82,18 +118,26 @@
 		$conn->autocommit(FALSE);
 
                 $file = fopen($filename,"r");
-                while(! feof($file))
+                
+		// Parsing the CSV file
+		while(! feof($file))
                 {
+			// Preprocessing data to meet standard before insertion	
                         $line = (fgetcsv($file));
                         $firstName = str_replace('\'', '\'\'', (preg_replace('/\s+/', '', (ucwords(strtolower($line[0]))))));
                         $lastName = str_replace('\'', '\'\'', (preg_replace('/\s+/', '', (ucwords(strtolower($line[1]))))));
                         $emailAddress = str_replace('\'', '\'\'', (preg_replace('/\s+/', '', ($line[2]))));
+			
+			// Checking email address validity
+                        if (filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) 
+			{
 
-                        if (filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
                                 echo "This ($emailAddress) email address is considered valid.\n";
+
                                 $sql = "INSERT INTO users (name, surname, email) 
                                         VALUES ('$firstName', '$lastName', '$emailAddress')";
 				
+				// Execute SQL statement
                                 if ($conn->query($sql) === TRUE) {
                                         echo "New record created successfully\n";
                                 }
@@ -101,6 +145,7 @@
                                         echo "Error: " . $sql . "<br>" . $conn->error . "\n\n";
                                 }
 			
+				// Rollback changes
 				$conn->rollback();
 				echo "New record insertion rolled back\n";
 
@@ -116,6 +161,13 @@
 		$conn->autocommit(TRUE); 
                 $conn->close();
 	}
+
+	
+	/*
+         insertFile() function is invoked when --file directive in entered.
+         It parses the input CSV file and saved all valid data to the database
+	 for a authorized user.
+        */
 
 	function insertFile($filename){
 
@@ -133,18 +185,26 @@
 		echo "Inserting data from $filename to DB\n";
 
 		$file = fopen($filename,"r");
+
+		// Parsing the CSV file
 		while(! feof($file))
         	{
+			// Preprocessing data to meet standard before insertion
         		$line = (fgetcsv($file));
 			$firstName = str_replace('\'', '\'\'', (preg_replace('/\s+/', '', (ucwords(strtolower($line[0]))))));
 			$lastName = str_replace('\'', '\'\'', (preg_replace('/\s+/', '', (ucwords(strtolower($line[1]))))));
 			$emailAddress = str_replace('\'', '\'\'', (preg_replace('/\s+/', '', ($line[2]))));
+			
+			// Checking email address validity
+			if (filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) 
+			{
 
-			if (filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
     				echo "This ($emailAddress) email address is considered valid.\n";
+				
 				$sql = "INSERT INTO users (name, surname, email) 
 					VALUES ('$firstName', '$lastName', '$emailAddress')";
 				
+				// Execute SQL statement				
 				if ($conn->query($sql) === TRUE) {
     					echo "New record created successfully\n";
 				} 
@@ -164,6 +224,11 @@
 		$conn->close();
 	}
 
+
+	/*
+         initDB() function is invoked when any of the directive entered except --help.
+         It creates the database if it doesn't exists and checks connection.
+        */
 
 	function initDB(){
 
@@ -192,6 +257,11 @@
 	}
 
 
+	/*
+         createTable() function is invoked when --create_table directive is entered.
+         It creates "users" table inside already created database in initDB().
+        */
+
 	function createTable(){
 
 		global $servername, $username, $password, $dbname;
@@ -205,7 +275,7 @@
                 }
                 echo "Connected successfully\n";
 		
-		// sql to create table
+		// SQL statement defining "users" table
                 $sql = "CREATE TABLE IF NOT EXISTS users (
                         id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                         name VARCHAR(30) NOT NULL,
@@ -215,6 +285,7 @@
                         UNIQUE (email)
                         )";
 
+		// Creating table
                 if ($conn->query($sql) === TRUE) {
                         echo "Table users created successfully\n\n";
                 }
@@ -226,7 +297,8 @@
 
 	}
 
-	//initDB();
+
+	// Starting point of script
 	commandCheck($argv);
 
 ?>

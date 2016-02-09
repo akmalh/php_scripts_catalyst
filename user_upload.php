@@ -17,7 +17,7 @@
 	$servername = "";	// Global variaable for host name
         $username = "";		// Global variable for SQL username
         $password = "";		// Global variable for SQL password
-	$dbname = "myDB";	// Global variable to hold the database name
+	$dbname = "DB";	// Global variable to hold the database name
 	
 
 	/*
@@ -380,7 +380,7 @@
 
 	function initDB(){
 
-		global $servername, $username, $password;		
+		global $servername, $username, $password, $dbname;		
 
 		// Create connection
                 $conn = new mysqli($servername, $username, $password);
@@ -392,7 +392,7 @@
                 echo "Connected successfully\n";
 
                 // Create database
-                $sql = "CREATE DATABASE IF NOT EXISTS myDB";
+                $sql = "CREATE DATABASE IF NOT EXISTS $dbname";
                 if ($conn->query($sql) === TRUE) {
                         echo "Database created successfully\n\n";
                 }

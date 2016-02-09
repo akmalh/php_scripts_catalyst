@@ -1,15 +1,18 @@
+<?php
+/*
 ###########################################################
 # Author: Akmal Hossain
 #
-# Description: 	The PHP script counts from 1 to 100. 
-#		For each number, it checks if it is 
-#		divisible by 3,5 and both. If any
-#		conditions is true, it prints an allocated
-#		message following the number. The script
-#		implements the logic that a single number
-#		can be divisble by one or both.
+# Description:  The PHP script counts from 1 to 100.
+#               For each number, it checks if it is
+#               divisible by 3,5 and both. If any
+#               conditions is true, it prints an allocated
+#               message following the number. The script
+#               implements the logic that a single number
+#               can be divisble by one or both.
 ###########################################################
-<?php
+*/
+
 	$counter = 1;	// Counter variable
 	$tripleMsg = "triple";	// Message for numbers divisible by 3
 	$fiverMsg = "fiver";	// Message for numbers divisible by 5

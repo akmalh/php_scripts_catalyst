@@ -34,14 +34,65 @@
 		switch ($command[1]){
 
                 case "--help":
+
                         helpDirectives();
-                        break;  
+                        break; 
+ 
                 case "--file":
 
 			$filename = $command[2];
-			$username = $command[4];
-			$password = $command[6];
-			$servername = $command[8];
+
+			if($command[3] == "-u")
+			{
+				$username = $command[4];
+			}
+			elseif($command[3] == "-p")
+			{
+				$password = $command[4];
+			}
+			elseif($command[3] == "-h")
+			{
+				$servername = $command[4];
+			}
+			else
+			{
+				exit ("Invalid user or host argument\n");
+			}
+
+			if($command[5] == "-u")
+                        {
+                                $username = $command[6];
+                        }
+                        elseif($command[5] == "-p")
+                        {
+                                $password = $command[6];
+                        }
+                        elseif($command[5] == "-h")
+                        {
+                                $servername = $command[6];
+                        }
+                        else
+                        {
+                                exit ("Invalid user or host argument\n");
+                        }
+
+			if($command[7] == "-u")
+                        {
+                                $username = $command[8];
+                        }
+                        elseif($command[7] == "-p")
+                        {
+                                $password = $command[8];
+                        }
+                        elseif($command[7] == "-h")
+                        {
+                                $servername = $command[8];
+                        }
+                        else
+                        {
+                                exit ("Invalid user or host argument\n");
+                        }
+
 
 			initDB();
                         insertFile($filename);
@@ -50,23 +101,120 @@
 
                 case "--create_table":
 
-			$username = $command[3];
-                        $password = $command[5];
-                        $servername = $command[7];
+			if($command[2] == "-u")
+                        {
+                                $username = $command[3];
+                        }
+                        elseif($command[2] == "-p")
+                        {
+                                $password = $command[3];
+                        }
+                        elseif($command[2] == "-h")
+                        {
+                                $servername = $command[3];
+                        }
+                        else
+                        {
+                                exit ("Invalid user or host argument\n");
+                        }
+
+                        if($command[4] == "-u")
+                        {
+                                $username = $command[5];
+                        }
+                        elseif($command[4] == "-p")
+                        {
+                                $password = $command[5];
+                        }
+                        elseif($command[4] == "-h")
+                        {
+                                $servername = $command[5];
+                        }
+                        else
+                        {
+                                exit ("Invalid user or host argument\n");
+                        }
+
+			if($command[6] == "-u")
+                        {
+                                $username = $command[7];
+                        }
+                        elseif($command[6] == "-p")
+                        {
+                                $password = $command[7];
+                        }
+                        elseif($command[6] == "-h")
+                        {
+                                $servername = $command[7];
+                        }
+                        else
+                        {
+                                exit ("Invalid user or host argument\n");
+                        }
 
 			initDB();
                         createTable();
+
                         break;
 
                 case "--dry_run":
 
 			$filename = $command[3];
-                        $username = $command[5];
-                        $password = $command[7];
-			$servername = $command[9];
+                        
+			if($command[4] == "-u")
+                        {
+                                $username = $command[5];
+                        }
+                        elseif($command[4] == "-p")
+                        {
+                                $password = $command[5];
+                        }
+                        elseif($command[4] == "-h")
+                        {
+                                $servername = $command[5];
+                        }
+                        else
+                        {
+                                exit ("Invalid user or host argument\n");
+                        }
+
+			if($command[6] == "-u")
+                        {
+                                $username = $command[7];
+                        }
+                        elseif($command[6] == "-p")
+                        {
+                                $password = $command[7];
+                        }
+                        elseif($command[6] == "-h")
+                        {
+                                $servername = $command[7];
+                        }
+                        else
+                        {
+                                exit ("Invalid user or host argument\n");
+                        }
+
+                        if($command[8] == "-u")
+                        {
+                                $username = $command[9];
+                        }
+                        elseif($command[8] == "-p")
+                        {
+                                $password = $command[9];
+                        }
+                        elseif($command[8] == "-h")
+                        {
+                                $servername = $command[9];
+                        }
+                        else
+                        {
+                                exit ("Invalid user or host argument\n");
+                        }
 			
 			initDB();
                         dryRun($filename);
+
                         break;
 
                 default:

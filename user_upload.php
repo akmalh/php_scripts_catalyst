@@ -1,26 +1,50 @@
 <?php
-	$servername = "localhost";
-        $username = "root";
-        $password = "password";
+	$servername = "";
+        $username = "";
+        $password = "";
 	$dbname = "myDB";
 	
 	function commandCheck ($command){
 		
+		global $servername, $username, $password;
 		switch ($command[1]){
 
                 case "--help":
                         helpDirectives();
                         break;  
                 case "--file":
+
 			$filename = $command[2];
+			$username = $command[4];
+			$password = $command[6];
+			$servername = $command[8];
+
+			initDB();
                         insertFile($filename);
+
                         break;
+
                 case "--create_table":
+
+			$username = $command[3];
+                        $password = $command[5];
+                        $servername = $command[7];
+
+			initDB();
                         createTable();
                         break;
+
                 case "--dry_run":
+
+			$filename = $command[3];
+                        $username = $command[5];
+                        $password = $command[7];
+			$servername = $command[9];
+
+			initDB();
                         dryRun();
                         break;
+
                 default:
                         echo "Invalid command entered\n";
 		}
@@ -28,14 +52,14 @@
 
 	function helpDirectives(){
 
-		echo "\n\n";
+		echo "\n";
 		echo "--file [csv  le name] – this is the name of the CSV to be parsed.\n\n";
 		echo "--create_table – this will cause the MySQL users table to be built (and no further action will be taken).\n\n";
 		echo "--dry_run – this will be used with the --file directive in the instance that we want to run the script but not insert into the DB. All other functions will be executed, but the database won't be altered.\n\n";
 		echo "-u – MySQL username.\n\n";
 		echo "-p – MySQL password.\n\n";
 		echo "-h – MySQL host.\n\n";
-		echo "--help – which will output the above list of directives with details.\n\n";
+		echo "--help – which will output the above list of directives with details.\n";
 
 	}
 
@@ -153,6 +177,7 @@
 
 	}
 
-	initDB();
+	//initDB();
 	commandCheck($argv);
+
 ?>
